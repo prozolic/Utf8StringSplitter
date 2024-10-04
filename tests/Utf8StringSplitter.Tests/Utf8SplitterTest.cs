@@ -1,6 +1,7 @@
 using FluentAssertions;
 using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace Utf8StringSplitter.Tests
 {
@@ -643,6 +644,56 @@ namespace Utf8StringSplitter.Tests
             }
         }
 
+        [Fact]
+        public void SplitWhiteSpace()
+        {
+            {
+                var index = 0;
+                foreach (var s in Utf8Splitter.Split("  "u8, " "u8))
+                {
+                    index++;
+                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                }
+
+                index.Should().Be(3);
+            }
+            {
+                var index = 0;
+                foreach (var s in Utf8Splitter.Split("  "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
+                {
+                    index++;
+                    Console.WriteLine($"[{Encoding.UTF8.GetString(s.ToArray())}]");
+                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                }
+
+                index.Should().Be(3);
+
+                index = 0;
+                foreach (var s in Utf8Splitter.Split("     "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
+                {
+                    index++;
+                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                }
+
+                index.Should().Be(6);
+
+                var expected = new List<byte[]>()
+                {
+                    ""u8.ToArray(),
+                    ""u8.ToArray(),
+                    "1"u8.ToArray(),
+                    ""u8.ToArray(),
+                    ""u8.ToArray(),
+                };
+                index = 0;
+                foreach (var s in Utf8Splitter.Split("  1  "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
+                {
+                    s.ToArray().Should().Equal(expected[index++]);
+                }
+
+                index.Should().Be(5);
+            }
+        }
 
         [Fact]
         public void SplitAnyTest()
