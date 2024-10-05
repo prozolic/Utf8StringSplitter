@@ -1116,7 +1116,7 @@ namespace Utf8StringSplitter.Tests
         }
 
         [Fact]
-        public void SplitAnyWithMultiByteDelimiterOptionsTest()
+        public void SplitAnyWithUtf8DelimiterOptionsTest()
         {
             {
                 var expected = new List<byte[]>()
@@ -1141,7 +1141,7 @@ namespace Utf8StringSplitter.Tests
                     "‚¨"u8.ToArray(),
                 };
                 var index = 0;
-                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, delimiterOptions:Utf8StringDelimiterOptions.MultiByte))
+                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, separatorOptions:Utf8StringSeparatorOptions.Utf8))
                 {
                     s.SequenceEqual(expected[index++]).Should().BeTrue();
                 }
@@ -1151,7 +1151,7 @@ namespace Utf8StringSplitter.Tests
         }
 
         [Fact]
-        public void SplitAnyWithSingleByteDelimiterOptionsTest()
+        public void SplitAnyWithBytesDelimiterOptionsTest()
         {
             {
                 var actual = new List<byte[]>();
@@ -1159,7 +1159,7 @@ namespace Utf8StringSplitter.Tests
                 expected.AddRange([[], [], [130], [], [132], [], [], [], [], [136], [], [], [], [], [138]]);
 
                 var ss = "‚ ‚¢‚¤‚¦‚¤‚¨"u8.ToArray();
-                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, delimiterOptions: Utf8StringDelimiterOptions.SingleByte))
+                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
                     actual.Add(s.ToArray());
                 }
@@ -1176,7 +1176,7 @@ namespace Utf8StringSplitter.Tests
                 };
                 var index = 0;
 
-                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries, delimiterOptions: Utf8StringDelimiterOptions.SingleByte))
+                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
                     s.SequenceEqual([expected[index++]]).Should().BeTrue();
                 }
