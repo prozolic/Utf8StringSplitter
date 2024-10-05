@@ -7,6 +7,21 @@ namespace Utf8StringSplitter.Tests
 {
     public class Utf8SplitterTest
     {
+        public Utf8SplitterTest() 
+        {
+            foreach (var i in "‚ ‚¢‚¤‚¦‚¤‚¨"u8)
+            {
+                Console.WriteLine($"{i}");
+            }
+            var source = "‚ ‚¢‚¤‚¦‚¤‚¨"u8.ToArray();
+            var source2 = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 };
+
+            for (var i = 0; i < source2.Length; i++)
+            {
+                Console.WriteLine($"[{i}] source[{i}] = {source[i]} source2[{i}] = {source2[i]}");
+            }
+        }
+
         [Fact]
         public void SplitTest()
         {
