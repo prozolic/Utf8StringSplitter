@@ -60,6 +60,20 @@ namespace Utf8StringSplitter.Tests
         }
 
         [Fact]
+        public void SplitTest4()
+        {
+            var index = 0;
+            var expected = "12345"u8.ToArray();
+            foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, (byte)','))
+            {
+                s.Length.Should().Be(1);
+                s[0].Should().Be(expected[index++]);
+            }
+
+            index.Should().Be(expected.Length);
+        }
+
+        [Fact]
         public void SplitWithTrimEntriesTest()
         {
             var expected = new List<byte[]>()
@@ -170,6 +184,29 @@ namespace Utf8StringSplitter.Tests
         }
 
         [Fact]
+        public void SplitWithTrimEntriesTest7()
+        {
+            var expected = new List<byte[]>()
+            {
+                ""u8.ToArray(),
+                "1"u8.ToArray(),
+                "2"u8.ToArray(),
+                "3"u8.ToArray(),
+                ""u8.ToArray(),
+                "4"u8.ToArray(),
+                "5"u8.ToArray(),
+                ""u8.ToArray(),
+            };
+            var index = 0;
+            foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, (byte)',', Utf8StringSplitOptions.TrimEntries))
+            {
+                s.ToArray().Should().Equal(expected[index++]);
+            }
+
+            index.Should().Be(expected.Count);
+        }
+
+        [Fact]
         public void SplitWithRemoveEmptyEntriesTest()
         {
             var expected = new List<byte[]>()
@@ -268,6 +305,28 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split("-- 1--2 ----3-- -- 4 --5--"u8, "--"u8, Utf8StringSplitOptions.RemoveEmptyEntries))
             {
                 s.SequenceEqual(expected[index++]).Should().BeTrue();
+            }
+
+            index.Should().Be(expected.Count);
+        }
+
+        [Fact]
+        public void SplitWithRemoveEmptyEntriesTest7()
+        {
+            var expected = new List<byte[]>()
+            {
+                " "u8.ToArray(),
+                " 1 "u8.ToArray(),
+                " 2"u8.ToArray(),
+                "3 "u8.ToArray(),
+                "4"u8.ToArray(),
+                " 5"u8.ToArray(),
+                "  "u8.ToArray(),
+            };
+            var index = 0;
+            foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, (byte)',', Utf8StringSplitOptions.RemoveEmptyEntries))
+            {
+                s.ToArray().Should().Equal(expected[index++]);
             }
 
             index.Should().Be(expected.Count);
@@ -377,6 +436,28 @@ namespace Utf8StringSplitter.Tests
             index.Should().Be(expected.Count);
         }
 
+
+        [Fact]
+        public void SplitWithTrimEntriesAndRemoveEmptyEntriesTest7()
+        {
+            var expected = new List<byte[]>()
+            {
+                "1"u8.ToArray(),
+                "2"u8.ToArray(),
+                "3"u8.ToArray(),
+                "4"u8.ToArray(),
+                "5"u8.ToArray(),
+            };
+            var index = 0;
+            foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, (byte)',',
+                Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
+            {
+                s.ToArray().Should().Equal(expected[index++]);
+            }
+
+            index.Should().Be(expected.Count);
+        }
+
         [Fact]
         public void SplitEmptyTest()
         {
@@ -435,6 +516,19 @@ namespace Utf8StringSplitter.Tests
 
                 index.Should().Be(1);
             }
+        }
+
+        [Fact]
+        public void SplitEmptyTest3()
+        {
+            var index = 0;
+            foreach (var s in Utf8Splitter.Split(""u8, (byte)','))
+            {
+                index++;
+                s.ToArray().Should().Equal(""u8.ToArray());
+            }
+
+            index.Should().Be(1);
         }
 
         [Fact]
@@ -687,6 +781,57 @@ namespace Utf8StringSplitter.Tests
                 };
                 index = 0;
                 foreach (var s in Utf8Splitter.Split("  1  "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
+                {
+                    s.ToArray().Should().Equal(expected[index++]);
+                }
+
+                index.Should().Be(5);
+            }
+        }
+
+        [Fact]
+        public void SplitWhiteSpace2()
+        {
+            {
+                var index = 0;
+                foreach (var s in Utf8Splitter.Split("  "u8, (byte)' '))
+                {
+                    index++;
+                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                }
+
+                index.Should().Be(3);
+            }
+            {
+                var index = 0;
+                foreach (var s in Utf8Splitter.Split("  "u8, (byte)' ', Utf8StringSplitOptions.TrimEntries))
+                {
+                    index++;
+                    Console.WriteLine($"[{Encoding.UTF8.GetString(s.ToArray())}]");
+                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                }
+
+                index.Should().Be(3);
+
+                index = 0;
+                foreach (var s in Utf8Splitter.Split("     "u8, (byte)' ', Utf8StringSplitOptions.TrimEntries))
+                {
+                    index++;
+                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                }
+
+                index.Should().Be(6);
+
+                var expected = new List<byte[]>()
+                {
+                    ""u8.ToArray(),
+                    ""u8.ToArray(),
+                    "1"u8.ToArray(),
+                    ""u8.ToArray(),
+                    ""u8.ToArray(),
+                };
+                index = 0;
+                foreach (var s in Utf8Splitter.Split("  1  "u8, (byte)' ', Utf8StringSplitOptions.TrimEntries))
                 {
                     s.ToArray().Should().Equal(expected[index++]);
                 }

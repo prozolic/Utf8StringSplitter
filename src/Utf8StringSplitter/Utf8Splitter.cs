@@ -6,6 +6,17 @@ namespace Utf8StringSplitter;
 
 public static class Utf8Splitter
 {
+    public static SplitEnumerator Split(ReadOnlySpan<byte> source, byte delimiter, Utf8StringSplitOptions splitOptions = Utf8StringSplitOptions.None)
+    {
+        const Utf8StringSplitOptions AllOptions = Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries;
+        if ((splitOptions & ~AllOptions) != 0)
+        {
+            throw new ArgumentException("Utf8StringSplitOptions Value is Invalid.");
+        }
+
+        return new SplitEnumerator(source, delimiter, splitOptions);
+    }
+
     public static SplitEnumerator Split(ReadOnlySpan<byte> source, ReadOnlySpan<byte> delimiter, Utf8StringSplitOptions splitOptions = Utf8StringSplitOptions.None)
     {
         const Utf8StringSplitOptions AllOptions = Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries;
@@ -53,16 +64,40 @@ public enum Utf8StringDelimiterOptions
 public ref struct SplitEnumerator
 {
     private ReadOnlySpan<byte> source;
-    private readonly ReadOnlySpan<byte> delimiter;
+    private readonly byte delimiterByte;
+    private readonly ReadOnlySpan<byte> delimiterBytes;
     private readonly Utf8StringSplitOptions options;
-    private bool targetEmpty;
+    private bool sourceEmpty;
+    private bool singleDelimiter;
 
-    public SplitEnumerator(ReadOnlySpan<byte> source, ReadOnlySpan<byte> delimiter, Utf8StringSplitOptions options)
+    internal SplitEnumerator(ReadOnlySpan<byte> source, byte delimiter, Utf8StringSplitOptions options)
     {
         this.source = source;
-        this.delimiter = delimiter;
+        sourceEmpty = source.Length == 0;
+        singleDelimiter = true;
+
+        this.delimiterByte = delimiter;
+        this.delimiterBytes = ReadOnlySpan<byte>.Empty;
         this.options = options;
-        targetEmpty = source.Length == 0;
+    }
+
+    internal SplitEnumerator(ReadOnlySpan<byte> source, ReadOnlySpan<byte> delimiter, Utf8StringSplitOptions options)
+    {
+        this.source = source;
+        sourceEmpty = source.Length == 0;
+        singleDelimiter = delimiter.Length == 1;
+
+        if (singleDelimiter)
+        {
+            this.delimiterByte = delimiter[0];
+            this.delimiterBytes = ReadOnlySpan<byte>.Empty;
+            this.options = options;
+        }
+        else
+        {
+            this.delimiterBytes = delimiter;
+            this.options = options;
+        }
     }
 
     public ReadOnlySpan<byte> Current { get; private set; } = default;
@@ -71,17 +106,30 @@ public ref struct SplitEnumerator
 
     public bool MoveNext()
     {
+        if (singleDelimiter)
+        {
+            Span<byte> delimiter = stackalloc byte[1];
+            delimiter[0] = this.delimiterByte;
+
+            return MoveNextInternal(delimiter);
+        }
+
+        return MoveNextInternal(this.delimiterBytes);
+    }
+
+    private bool MoveNextInternal(scoped ReadOnlySpan<byte> delimiter)
+    {
         if (options != Utf8StringSplitOptions.None)
         {
-            return MoveNextWithOptions();
+            return MoveNextInternalWithOptions(delimiter);
         }
 
         var target = this.source;
         if (target.Length == 0)
         {
-            if (targetEmpty)
+            if (sourceEmpty)
             {
-                targetEmpty = false;
+                sourceEmpty = false;
                 Current = ReadOnlySpan<byte>.Empty;
                 return true;
             }
@@ -107,12 +155,12 @@ public ref struct SplitEnumerator
         Current = target[..indexForNone];
         indexForNone += delimiter.Length;
         this.source = target[indexForNone..];
-        targetEmpty = this.source.Length == 0;
+        sourceEmpty = this.source.Length == 0;
 
         return true;
     }
 
-    private bool MoveNextWithOptions()
+    private bool MoveNextInternalWithOptions(scoped ReadOnlySpan<byte> delimiter)
     {
         var source = this.source;
         var removeEmptyEntries = (options & Utf8StringSplitOptions.RemoveEmptyEntries) == Utf8StringSplitOptions.RemoveEmptyEntries;
@@ -121,9 +169,9 @@ public ref struct SplitEnumerator
 
         if (source.Length == 0)
         {
-            if (targetEmpty && !removeEmptyEntries)
+            if (sourceEmpty && !removeEmptyEntries)
             {
-                targetEmpty = false;
+                sourceEmpty = false;
                 Current = ReadOnlySpan<byte>.Empty;
                 return true;
             }
@@ -228,7 +276,7 @@ public ref struct SplitEnumerator
 
         Current = current;
         this.source = source;
-        targetEmpty = this.source.Length == 0;
+        sourceEmpty = this.source.Length == 0;
         return true;
     }
 
@@ -240,15 +288,15 @@ public ref struct SplitAnyEnumerator
     private readonly ReadOnlySpan<byte> delimiter;
     private readonly Utf8StringSplitOptions options;
     private readonly Utf8StringDelimiterOptions delimiterOptions;
-    private bool targetEmpty;
+    private bool sourceEmpty;
 
-    public SplitAnyEnumerator(ReadOnlySpan<byte> source, ReadOnlySpan<byte> delimiter, Utf8StringSplitOptions options, Utf8StringDelimiterOptions delimiterOptions)
+    internal SplitAnyEnumerator(ReadOnlySpan<byte> source, ReadOnlySpan<byte> delimiter, Utf8StringSplitOptions options, Utf8StringDelimiterOptions delimiterOptions)
     {
         this.source = source;
         this.delimiter = delimiter;
         this.options = options;
         this.delimiterOptions = delimiterOptions;
-        targetEmpty = source.Length == 0;
+        sourceEmpty = source.Length == 0;
     }
 
     public ReadOnlySpan<byte> Current { get; private set; } = default;
@@ -265,9 +313,9 @@ public ref struct SplitAnyEnumerator
         var source = this.source;
         if (source.Length == 0)
         {
-            if (targetEmpty)
+            if (sourceEmpty)
             {
-                targetEmpty = false;
+                sourceEmpty = false;
                 Current = ReadOnlySpan<byte>.Empty;
                 return true;
             }
@@ -303,7 +351,7 @@ public ref struct SplitAnyEnumerator
         Current = source[..indexForNone];
         indexForNone += sequenceLength;
         this.source = source[indexForNone..];
-        targetEmpty = this.source.Length == 0;
+        sourceEmpty = this.source.Length == 0;
 
         return true;
     }
@@ -317,9 +365,9 @@ public ref struct SplitAnyEnumerator
 
         if (target.Length == 0)
         {
-            if (targetEmpty && !removeEmptyEntries)
+            if (sourceEmpty && !removeEmptyEntries)
             {
-                targetEmpty = false;
+                sourceEmpty = false;
                 Current = ReadOnlySpan<byte>.Empty;
                 return true;
             }
@@ -444,7 +492,7 @@ public ref struct SplitAnyEnumerator
 
         Current = current;
         this.source = target;
-        targetEmpty = this.source.Length == 0;
+        sourceEmpty = this.source.Length == 0;
         return true;
     }
 
