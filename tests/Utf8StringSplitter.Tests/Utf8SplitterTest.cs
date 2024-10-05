@@ -7,21 +7,6 @@ namespace Utf8StringSplitter.Tests
 {
     public class Utf8SplitterTest
     {
-        public Utf8SplitterTest() 
-        {
-            foreach (var i in "‚ ‚¢‚¤‚¦‚¤‚¨"u8)
-            {
-                Console.WriteLine($"{i}");
-            }
-            var source = "‚ ‚¢‚¤‚¦‚¤‚¨"u8.ToArray();
-            var source2 = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 };
-
-            for (var i = 0; i < source2.Length; i++)
-            {
-                Console.WriteLine($"[{i}] source[{i}] = {source[i]} source2[{i}] = {source2[i]}");
-            }
-        }
-
         [Fact]
         public void SplitTest()
         {
@@ -1144,7 +1129,6 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(source, separator))
                 {
-                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual(expected[index++]).Should().BeTrue();
                 }
 
@@ -1160,7 +1144,6 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(source, separator, separatorOptions:Utf8StringSeparatorOptions.Utf8))
                 {
-                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual(expected[index++]).Should().BeTrue();
                 }
 
@@ -1179,7 +1162,6 @@ namespace Utf8StringSplitter.Tests
                 expected.AddRange([[], [], [130], [], [132], [], [], [], [], [136], [], [], [], [], [138]]);
                 foreach (var s in Utf8Splitter.SplitAny(source, separator, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
-                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     actual.Add(s.ToArray());
                 }
 
@@ -1197,7 +1179,6 @@ namespace Utf8StringSplitter.Tests
 
                 foreach (var s in Utf8Splitter.SplitAny(source, separator, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
-                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual([expected[index++]]).Should().BeTrue();
                 }
 
