@@ -756,7 +756,6 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split("  "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    Console.WriteLine($"[{Encoding.UTF8.GetString(s.ToArray())}]");
                     s.ToArray().Should().Equal(Array.Empty<byte>());
                 }
 
@@ -921,6 +920,8 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.SplitAny("123456"u8, "-,;=:>?"u8))
             {
                 index++;
+                Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
+                s.Length.Should().Be(6);
                 s.SequenceEqual("123456"u8).Should().BeTrue();
             }
 
@@ -1116,7 +1117,7 @@ namespace Utf8StringSplitter.Tests
         }
 
         [Fact]
-        public void SplitAnyWithUtf8DelimiterOptionsTest()
+        public void SplitAnyWithUtf8SeparatorOptionsTest()
         {
             {
                 var expected = new List<byte[]>()
@@ -1151,7 +1152,7 @@ namespace Utf8StringSplitter.Tests
         }
 
         [Fact]
-        public void SplitAnyWithBytesDelimiterOptionsTest()
+        public void SplitAnyWithBytesSeparatorOptionsTest()
         {
             {
                 var actual = new List<byte[]>();
@@ -1161,6 +1162,7 @@ namespace Utf8StringSplitter.Tests
                 var ss = "‚ ‚¢‚¤‚¦‚¤‚¨"u8.ToArray();
                 foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
+                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     actual.Add(s.ToArray());
                 }
 
@@ -1178,6 +1180,7 @@ namespace Utf8StringSplitter.Tests
 
                 foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
+                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual([expected[index++]]).Should().BeTrue();
                 }
 
