@@ -806,7 +806,6 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split("  "u8, (byte)' ', Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    Console.WriteLine($"[{Encoding.UTF8.GetString(s.ToArray())}]");
                     s.ToArray().Should().Equal(Array.Empty<byte>());
                 }
 
@@ -920,7 +919,6 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.SplitAny("123456"u8, "-,;=:>?"u8))
             {
                 index++;
-                Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                 s.Length.Should().Be(6);
                 s.SequenceEqual("123456"u8).Should().BeTrue();
             }
@@ -1129,6 +1127,7 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8))
                 {
+                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual(expected[index++]).Should().BeTrue();
                 }
 
@@ -1144,6 +1143,7 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, separatorOptions:Utf8StringSeparatorOptions.Utf8))
                 {
+                    Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual(expected[index++]).Should().BeTrue();
                 }
 
