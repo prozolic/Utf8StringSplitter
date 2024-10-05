@@ -1117,15 +1117,17 @@ namespace Utf8StringSplitter.Tests
         [Fact]
         public void SplitAnyWithUtf8SeparatorOptionsTest()
         {
+            var source = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 }; //‚ ‚¢‚¤‚¦‚¤‚¨
+            var separator = new byte[] { 227, 129, 134 }; //‚¤
             {
                 var expected = new List<byte[]>()
                 {
-                    "‚ ‚¢"u8.ToArray(),
-                    "‚¦"u8.ToArray(),
-                    "‚¨"u8.ToArray(),
+                    new byte[] { 227, 129, 130, 227, 129, 132 }, // ‚ ‚¢
+                    new byte[] { 227, 129, 136}, // ‚¦
+                    new byte[] { 227, 129, 138}, // ‚¨
                 };
                 var index = 0;
-                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8))
+                foreach (var s in Utf8Splitter.SplitAny(source, separator))
                 {
                     Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual(expected[index++]).Should().BeTrue();
@@ -1136,12 +1138,12 @@ namespace Utf8StringSplitter.Tests
             {
                 var expected = new List<byte[]>()
                 {
-                    "‚ ‚¢"u8.ToArray(),
-                    "‚¦"u8.ToArray(),
-                    "‚¨"u8.ToArray(),
+                    new byte[] { 227, 129, 130, 227, 129, 132 },
+                    new byte[] { 227, 129, 136},
+                    new byte[] { 227, 129, 138},
                 };
                 var index = 0;
-                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, separatorOptions:Utf8StringSeparatorOptions.Utf8))
+                foreach (var s in Utf8Splitter.SplitAny(source, separator, separatorOptions:Utf8StringSeparatorOptions.Utf8))
                 {
                     Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual(expected[index++]).Should().BeTrue();
@@ -1154,13 +1156,13 @@ namespace Utf8StringSplitter.Tests
         [Fact]
         public void SplitAnyWithBytesSeparatorOptionsTest()
         {
+            var source = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 }; //‚ ‚¢‚¤‚¦‚¤‚¨
+            var separator = new byte[] { 227, 129, 134 }; //‚¤
             {
                 var actual = new List<byte[]>();
                 var expected = new List<byte[]>();
                 expected.AddRange([[], [], [130], [], [132], [], [], [], [], [136], [], [], [], [], [138]]);
-
-                var ss = "‚ ‚¢‚¤‚¦‚¤‚¨"u8.ToArray();
-                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, separatorOptions: Utf8StringSeparatorOptions.Bytes))
+                foreach (var s in Utf8Splitter.SplitAny(source, separator, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
                     Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     actual.Add(s.ToArray());
@@ -1178,7 +1180,7 @@ namespace Utf8StringSplitter.Tests
                 };
                 var index = 0;
 
-                foreach (var s in Utf8Splitter.SplitAny("‚ ‚¢‚¤‚¦‚¤‚¨"u8, "‚¤"u8, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries, separatorOptions: Utf8StringSeparatorOptions.Bytes))
+                foreach (var s in Utf8Splitter.SplitAny(source, separator, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
                     Console.WriteLine($"{Encoding.UTF8.GetString(s.ToArray())}");
                     s.SequenceEqual([expected[index++]]).Should().BeTrue();
