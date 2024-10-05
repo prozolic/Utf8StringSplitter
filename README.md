@@ -76,10 +76,10 @@ public static class Utf8Splitter
 }
 ```
 
-`Utf8StringSplitter.Split`
+`Split`
 ---
 
-`Utf8StringSplitter.Split` Split and enumerate a UTF8 string into `ReadOnlySpan<byte>` based on the separators.
+`Utf8Splitter.Split` Split and enumerate a UTF8 string into `ReadOnlySpan<byte>` based on the separators.
 The separators can specify `byte` or `ReadOnlySpan<byte>`.
 Option can specify `Utf8StringSplitOptions` almost equivalent to [`StringSplitOptions`](https://learn.microsoft.com/en-us/dotnet/api/system.stringsplitoptions?view=net-8.0).
 
@@ -163,10 +163,10 @@ void SampleSplit()
 // 5
 ```
 
-`Utf8StringSplitter.SplitAny`
+`SplitAny`
 ---
 
-`Utf8StringSplitter.SplitAny` Split and enumerate a UTF8 string into `ReadOnlySpan<byte>` for one of the specified separators.  
+`Utf8Splitter.SplitAny` Split and enumerate a UTF8 string into `ReadOnlySpan<byte>` for one of the specified separators.  
 The first option can specify `Utf8StringSplitOptions` almost equivalent to [`StringSplitOptions`](https://learn.microsoft.com/en-us/dotnet/api/system.stringsplitoptions?view=net-8.0).
 
 ```csharp
