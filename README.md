@@ -1,6 +1,9 @@
 Utf8StringSplitter
 ===
 
+[![MIT License](https://img.shields.io/github/license/prozolic/Utf8StringSplitter)](LICENSE)
+[![Utf8StringSplitter](https://img.shields.io/nuget/v/Utf8StringSplitter?label=nuget%20Utf8StringSplitter)](https://www.nuget.org/packages/Utf8StringSplitter)
+
 `Utf8StringSplitter` provides methods (`Split` and `SplitAny`) to split Utf8 strings (`byte` sequences) based on a specified separators.  
 This library is distributed via NuGet, supporting .NET Standard 2.0, .NET Standard 2.1, .NET 6 (.NET 7), .NET 8 and above.
 
