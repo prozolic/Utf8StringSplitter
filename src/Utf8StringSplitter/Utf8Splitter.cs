@@ -42,7 +42,7 @@ public static class Utf8Splitter
             case Utf8StringSeparatorOptions.Bytes:
                 return new SplitAnyEnumerator(source, separators, splitOptions, separatorOptions);
             default:
-                throw new ArgumentException("Utf8StringDelimiterOptions Value is Invalid.");
+                throw new ArgumentException("Utf8StringSeparatorOptions Value is Invalid.");
         }
     }
 }
