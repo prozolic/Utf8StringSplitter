@@ -139,6 +139,34 @@ void SampleSplitAny2()
     }
 }
 
+void SampleToArray()
+{
+    Console.WriteLine("Utf8Splitter.ToArray");
+
+    foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, (byte)',').ToArray())
+    {
+        Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
+    }
+
+    foreach (var s in Utf8Splitter.SplitAny("1;2-3,4-5"u8, ",-;"u8).ToArray())
+    {
+        Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
+    }
+
+    foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, (byte)',').ToUtf16Array())
+    {
+        Console.WriteLine($"{s}");
+    }
+
+    foreach (var s in Utf8Splitter.SplitAny("1;2-3,4-5"u8, ",-;"u8).ToUtf16Array())
+    {
+        Console.WriteLine($"{s}");
+    }
+
+}
+
+SampleToArray();
+
 Sample();
 SampleSplit();
 SampleSplitAny();

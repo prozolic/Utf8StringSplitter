@@ -1,4 +1,5 @@
 ﻿
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -104,6 +105,8 @@ public ref struct SplitEnumerator
 
     public readonly SplitEnumerator GetEnumerator() => this;
 
+    internal readonly int sourceLength => source.Length;
+
     public bool MoveNext()
     {
         if (singleSeparator)
@@ -115,6 +118,28 @@ public ref struct SplitEnumerator
         }
 
         return MoveNextInternal(this.separatorBytes);
+    }
+
+    public readonly byte[][] ToArray()
+    {
+        var writer = new ExtendableArray<byte[]>(sourceLength);
+        foreach (var i in this)
+        {
+            writer.Add(i.ToArray());
+        }
+
+        return writer.AsSpan().ToArray();
+    }
+
+    public readonly string[] ToUtf16Array()
+    {
+        var writer = new ExtendableArray<string>(sourceLength);
+        foreach (var i in this)
+        {
+            writer.Add(UTF8Ex.GetString(i));
+        }
+
+        return writer.AsSpan().ToArray();
     }
 
     private bool MoveNextInternal(scoped ReadOnlySpan<byte> separator)
@@ -303,6 +328,8 @@ public ref struct SplitAnyEnumerator
 
     public readonly SplitAnyEnumerator GetEnumerator() => this;
 
+    internal readonly int sourceLength => source.Length;
+
     public bool MoveNext()
     {
         if (options != Utf8StringSplitOptions.None)
@@ -354,6 +381,28 @@ public ref struct SplitAnyEnumerator
         sourceEmpty = this.source.Length == 0;
 
         return true;
+    }
+
+    public readonly byte[][] ToArray()
+    {
+        var writer = new ExtendableArray<byte[]>(sourceLength);
+        foreach (var i in this)
+        {
+            writer.Add(i.ToArray());
+        }
+
+        return writer.AsSpan().ToArray();
+    }
+
+    public readonly string[] ToUtf16Array()
+    {
+        var writer = new ExtendableArray<string>(sourceLength);
+        foreach (var i in this)
+        {
+            writer.Add(UTF8Ex.GetString(i));
+        }
+
+        return writer.AsSpan().ToArray();
     }
 
     private bool MoveNextWithOptions()
@@ -610,6 +659,74 @@ internal static class Utf8StringUtility
         if ((Unsafe.Add(ref refBytes, ++i) & 0xc0) != 0x80) return -1;
         if ((Unsafe.Add(ref refBytes, ++i) & 0xc0) != 0x80) return -1;
         return 4;
+    }
+
+}
+
+internal struct ExtendableArray<T>
+{
+    private T[] array;
+    private int count;
+    private bool isRent;
+
+    public readonly int Count => count;
+
+    public readonly bool IsRent => isRent;
+
+    public ExtendableArray(int capacity)
+    {
+        array = ArrayPool<T>.Shared.Rent(capacity);
+        count = 0;
+        isRent = true;
+    }
+
+    public readonly ReadOnlySpan<T> AsSpan()
+        => array.AsSpan(0, count);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Add(T value)
+    {
+        var count = this.count;
+        var array = this.array;
+        if ((uint)count < (uint)array.Length)
+        {
+            array[count++] = value;
+            this.count = count;
+        }
+        else
+        {
+            this.AddAndEnsureCapacity(value);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Clear()
+    {
+        count = 0;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Return()
+    {
+        count = 0;
+        ArrayPool<T>.Shared.Return(array, RuntimeHelpersEx.IsReferenceOrContainsReferences<T>());
+        array = [];
+        isRent = false;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void AddAndEnsureCapacity(T value)
+    {
+        var count = this.count;
+        var oldArray = array;
+
+        var newArray = ArrayPool<T>.Shared.Rent(Math.Min(oldArray.Length * 2, ArrayEx.MaxLength));
+        Array.Copy(oldArray, newArray, count);
+        ArrayPool<T>.Shared.Return(oldArray, RuntimeHelpersEx.IsReferenceOrContainsReferences<T>());
+
+        newArray[count] = value;
+        this.count = count + 1;
+        this.array = newArray;
     }
 
 }

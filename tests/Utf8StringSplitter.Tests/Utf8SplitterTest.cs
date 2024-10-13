@@ -1185,5 +1185,58 @@ namespace Utf8StringSplitter.Tests
                 index.Should().Be(expected.Count);
             }
         }
+
+        [Fact]
+        public void ToArrayTest()
+        {
+            var expected = new byte[][] { "1"u8.ToArray(), "2"u8.ToArray(), "3"u8.ToArray(), "4"u8.ToArray(), "5"u8.ToArray() };
+            var result = Utf8Splitter.Split("1,2,3,4,5"u8, ","u8).ToArray();
+
+            for (var i = 0; i < result.Length; i++)
+            {
+                expected[i].Should().Equal(result[i]);
+            }
+            result.Length.Should().Be(expected.Length);
+        }
+
+        [Fact]
+        public void ToArrayTest2()
+        {
+            var expected = new byte[][] { "1"u8.ToArray(), "2"u8.ToArray(), "3"u8.ToArray(), "4"u8.ToArray(), "5"u8.ToArray() };
+            var result = Utf8Splitter.SplitAny("1,2-3;4-5"u8, "-,;"u8).ToArray();
+
+            for (var i = 0; i < result.Length; i++)
+            {
+                expected[i].Should().Equal(result[i]);
+            }
+            result.Length.Should().Be(expected.Length);
+        }
+
+        [Fact]
+        public void ToUtf16ArrayTest()
+        {
+            var expected = "12345".Select(c => c.ToString()).ToArray();
+            var result = Utf8Splitter.Split("1,2,3,4,5"u8, ","u8).ToUtf16Array();
+
+            for (var i = 0; i < result.Length; i++)
+            {
+                expected[i].Should().Be(result[i]);
+            }
+            result.Length.Should().Be(expected.Length);
+        }
+
+        [Fact]
+        public void ToUtf16ArrayTest2()
+        {
+            var expected = "12345".Select(c => c.ToString()).ToArray();
+            var result = Utf8Splitter.SplitAny("1,2-3;4-5"u8, "-,;"u8).ToUtf16Array();
+
+            for (var i = 0; i < result.Length; i++)
+            {
+                expected[i].Should().Be(result[i]);
+            }
+            result.Length.Should().Be(expected.Length);
+        }
+
     }
 }
