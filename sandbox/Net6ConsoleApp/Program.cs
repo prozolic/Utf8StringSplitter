@@ -142,35 +142,24 @@ void SampleSplitAny2()
 void SampleToArray()
 {
     Console.WriteLine("Utf8Splitter.ToArray");
-
-    foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, (byte)',').ToArray())
+    foreach (byte[] s in Utf8Splitter.Split("1,10,100,1000,10000"u8, (byte)',').ToArray().Where(s => s.Length > 3))
     {
         Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
     }
 
-    foreach (var s in Utf8Splitter.SplitAny("1;2-3,4-5"u8, ",-;"u8).ToArray())
+    Console.WriteLine("Utf8Splitter.ToUtf16Array");
+    foreach (string s in Utf8Splitter.Split("1,10,100,1000,10000"u8, (byte)',').ToUtf16Array().Select(s => $"[{s}]"))
     {
-        Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
+        Console.WriteLine(s);
     }
-
-    foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, (byte)',').ToUtf16Array())
-    {
-        Console.WriteLine($"{s}");
-    }
-
-    foreach (var s in Utf8Splitter.SplitAny("1;2-3,4-5"u8, ",-;"u8).ToUtf16Array())
-    {
-        Console.WriteLine($"{s}");
-    }
-
 }
-
-SampleToArray();
 
 Sample();
 SampleSplit();
 SampleSplitAny();
 SampleSplitAny2();
+SampleToArray();
+
 
 foreach (var s in Utf8Splitter.Split("     ,2, 3,4,5"u8, ","u8, Utf8StringSplitOptions.None))
 {

@@ -13,36 +13,29 @@ How to use
 ---
 
 ```csharp
-
-using System.Text;
-using Utf8StringSplitter;
-
-void Sample()
+// u8 suffix is a C# 11 feature
+ReadOnlySpan<byte> utf8Source = "1,2,3,4,5"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source, (byte)','))
 {
-    // u8 suffix is a C# 11 feature
-    ReadOnlySpan<byte> utf8Source = "1,2,3,4,5"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source, (byte)','))
-    {
-        // ToArray for .NET Standard 2.0
-        //Console.WriteLine($"{Encoding.UTF8.GetString(str.ToArray())}");
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
-    Console.WriteLine("--------------------");
+    // ToArray for .NET Standard 2.0
+    //Console.WriteLine($"{Encoding.UTF8.GetString(str.ToArray())}");
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
+Console.WriteLine("--------------------");
 
-    // u8 suffix is a C# 11 feature
-    ReadOnlySpan<byte> utf8Source2 = "1--2--3--4--5"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source2, "--"u8))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
-    Console.WriteLine("--------------------");
+// u8 suffix is a C# 11 feature
+ReadOnlySpan<byte> utf8Source2 = "1--2--3--4--5"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source2, "--"u8))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
+Console.WriteLine("--------------------");
 
-    // u8 suffix is a C# 11 feature
-    ReadOnlySpan<byte> utf8Source3 = "1,2-3;4-5"u8;
-    foreach (var str in Utf8Splitter.SplitAny(utf8Source3, "-,;"u8))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
+// u8 suffix is a C# 11 feature
+ReadOnlySpan<byte> utf8Source3 = "1,2-3;4-5"u8;
+foreach (var str in Utf8Splitter.SplitAny(utf8Source3, "-,;"u8))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
 }
 ```
 
@@ -87,49 +80,45 @@ The separators can specify `byte` or `ReadOnlySpan<byte>`.
 Option can specify `Utf8StringSplitOptions` almost equivalent to [`StringSplitOptions`](https://learn.microsoft.com/en-us/dotnet/api/system.stringsplitoptions?view=net-8.0).
 
 ```csharp
-void SampleSplit()
+// default
+Console.WriteLine("Utf8Splitter.Split");
+ReadOnlySpan<byte> utf8Source = "1,2,3,4,5"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source, (byte)','))
 {
-    // default
-    Console.WriteLine("Utf8Splitter.Split");
-    ReadOnlySpan<byte> utf8Source = "1,2,3,4,5"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source, (byte)','))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
-
-    Console.WriteLine("Utf8Splitter.Split");
-    ReadOnlySpan<byte> utf8Source2 = "1---2---3---4---5"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source2, "---"u8))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
-
-    // splitOptions is TrimEntries.
-    Console.WriteLine("Utf8Splitter.Split : Utf8StringSplitOptions.TrimEntries");
-    ReadOnlySpan<byte> utf8Source3 = " 1 , 2 , 3 , 4 , 5 "u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source3, (byte)',', splitOptions: Utf8StringSplitOptions.TrimEntries))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
-
-    // splitOptions is RemoveEmptyEntries.
-    Console.WriteLine("Utf8Splitter.Split : Utf8StringSplitOptions.RemoveEmptyEntries");
-    ReadOnlySpan<byte> utf8Source4 = ",1,2,,,,3,,4,,5,,"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source4, (byte)',', splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
-
-    // splitOptions is TrimEntries and RemoveEmptyEntries.
-    Console.WriteLine("Utf8Splitter.Split : Utf8StringSplitOptions.TrimEntries and RemoveEmptyEntries");
-    ReadOnlySpan<byte> utf8Source5 = " ,1,  2, ,,  ,  3 ,,4,, 5 ,,"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source5, (byte)',', 
-        splitOptions: Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
 }
 
+Console.WriteLine("Utf8Splitter.Split");
+ReadOnlySpan<byte> utf8Source2 = "1---2---3---4---5"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source2, "---"u8))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
+
+// splitOptions is TrimEntries.
+Console.WriteLine("Utf8Splitter.Split : Utf8StringSplitOptions.TrimEntries");
+ReadOnlySpan<byte> utf8Source3 = " 1 , 2 , 3 , 4 , 5 "u8;
+foreach (var str in Utf8Splitter.Split(utf8Source3, (byte)',', splitOptions: Utf8StringSplitOptions.TrimEntries))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
+
+// splitOptions is RemoveEmptyEntries.
+Console.WriteLine("Utf8Splitter.Split : Utf8StringSplitOptions.RemoveEmptyEntries");
+ReadOnlySpan<byte> utf8Source4 = ",1,2,,,,3,,4,,5,,"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source4, (byte)',', splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
+
+// splitOptions is TrimEntries and RemoveEmptyEntries.
+Console.WriteLine("Utf8Splitter.Split : Utf8StringSplitOptions.TrimEntries and RemoveEmptyEntries");
+ReadOnlySpan<byte> utf8Source5 = " ,1,  2, ,,  ,  3 ,,4,, 5 ,,"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source5, (byte)',', 
+    splitOptions: Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
 ```
 
 ```csharp
@@ -173,44 +162,41 @@ void SampleSplit()
 The first option can specify `Utf8StringSplitOptions` almost equivalent to [`StringSplitOptions`](https://learn.microsoft.com/en-us/dotnet/api/system.stringsplitoptions?view=net-8.0).
 
 ```csharp
-void SampleSplitAny()
+Console.WriteLine("Utf8Splitter.SplitAny");
+foreach (var s in Utf8Splitter.SplitAny("1;2-3,4-5"u8, ",-;"u8))
 {
-    Console.WriteLine("Utf8Splitter.SplitAny");
-    foreach (var s in Utf8Splitter.SplitAny("1;2-3,4-5"u8, ",-;"u8))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
-    }
+    Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
+}
 
-    Console.WriteLine("Utf8Splitter.SplitAny");
-    foreach (var s in Utf8Splitter.SplitAny("1😀2🙃3😋4😀5"u8, "😀🙃😋"u8))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
-    }
+Console.WriteLine("Utf8Splitter.SplitAny");
+foreach (var s in Utf8Splitter.SplitAny("1😀2🙃3😋4😀5"u8, "😀🙃😋"u8))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
+}
 
-    // splitOptions is TrimEntries.
-    Console.WriteLine("Utf8Splitter.SplitAny : Utf8StringSplitOptions.TrimEntries");
-    ReadOnlySpan<byte> utf8Source3 = " 1 , 2 - 3 ; 4 , 5 "u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source3, ",-;"u8, splitOptions: Utf8StringSplitOptions.TrimEntries))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
+// splitOptions is TrimEntries.
+Console.WriteLine("Utf8Splitter.SplitAny : Utf8StringSplitOptions.TrimEntries");
+ReadOnlySpan<byte> utf8Source3 = " 1 , 2 - 3 ; 4 , 5 "u8;
+foreach (var str in Utf8Splitter.Split(utf8Source3, ",-;"u8, splitOptions: Utf8StringSplitOptions.TrimEntries))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
 
-    // splitOptions is RemoveEmptyEntries.
-    Console.WriteLine("Utf8Splitter.SplitAny : Utf8StringSplitOptions.RemoveEmptyEntries");
-    ReadOnlySpan<byte> utf8Source4 = ",1,2,--,3,,4;,5;,"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source4, ",-;"u8, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
+// splitOptions is RemoveEmptyEntries.
+Console.WriteLine("Utf8Splitter.SplitAny : Utf8StringSplitOptions.RemoveEmptyEntries");
+ReadOnlySpan<byte> utf8Source4 = ",1,2,--,3,,4;,5;,"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source4, ",-;"u8, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
+}
 
-    // splitOptions is TrimEntries and RemoveEmptyEntries.
-    Console.WriteLine("Utf8Splitter.SplitAny : Utf8StringSplitOptions.TrimEntries and RemoveEmptyEntries");
-    ReadOnlySpan<byte> utf8Source5 = " ,1-  2, ,-  ,  3 ,,4,; 5 ,-"u8;
-    foreach (var str in Utf8Splitter.Split(utf8Source5, ",-;"u8,
-        splitOptions: Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
-    {
-        Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
-    }
+// splitOptions is TrimEntries and RemoveEmptyEntries.
+Console.WriteLine("Utf8Splitter.SplitAny : Utf8StringSplitOptions.TrimEntries and RemoveEmptyEntries");
+ReadOnlySpan<byte> utf8Source5 = " ,1-  2, ,-  ,  3 ,,4,; 5 ,-"u8;
+foreach (var str in Utf8Splitter.Split(utf8Source5, ",-;"u8,
+    splitOptions: Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(str)}");
 }
 ```
 
@@ -253,27 +239,23 @@ The second option can specify `Utf8StringSeparatorOptions`.
 The default value is `Utf8StringSeparatorOptions.Utf8`.
 
 ```csharp
-void SampleSplitAny2()
+Console.WriteLine("Utf8Splitter.SplitAny Utf8StringSeparatorOptions.Utf8");
+foreach (var s in Utf8Splitter.SplitAny("1😀2🙃3😋4😀5"u8, "😀🙃😋"u8, separatorOptions: Utf8StringSeparatorOptions.Utf8))
 {
-    Console.WriteLine("Utf8Splitter.SplitAny Utf8StringSeparatorOptions.Utf8");
-    foreach (var s in Utf8Splitter.SplitAny("1😀2🙃3😋4😀5"u8, "😀🙃😋"u8, separatorOptions: Utf8StringSeparatorOptions.Utf8))
+    for (var i = 0;i < s.Length; i++)
     {
-        for (var i = 0;i < s.Length; i++)
-        {
-            Console.Write($"{s[i]}");
-        }
-        Console.WriteLine();
+        Console.Write($"{s[i]}");
     }
-
-    Console.WriteLine("Utf8Splitter.SplitAny Utf8StringSeparatorOptions.Bytes");
-    foreach (var s in Utf8Splitter.SplitAny("1😀2🙃3😋4😀5"u8, "😀🙃😋"u8, separatorOptions:Utf8StringSeparatorOptions.Bytes))
+    Console.WriteLine();
+}
+Console.WriteLine("Utf8Splitter.SplitAny Utf8StringSeparatorOptions.Bytes");
+foreach (var s in Utf8Splitter.SplitAny("1😀2🙃3😋4😀5"u8, "😀🙃😋"u8, separatorOptions:Utf8StringSeparatorOptions.Bytes))
+{
+    for (var i = 0; i < s.Length; i++)
     {
-        for (var i = 0; i < s.Length; i++)
-        {
-            Console.Write($"{s[i]}");
-        }
-        Console.WriteLine();
+        Console.Write($"{s[i]}");
     }
+    Console.WriteLine();
 }
 ```
 
@@ -303,6 +285,39 @@ void SampleSplitAny2()
 // 
 // 
 // 53
+```
+
+ToArray and ToUtf16Array
+---
+
+`Split` and `SplitAny` can be used to enumerate, but they cannot then be combined to LINQ methods (For example, `Select` and `Where`).
+Calling `ToArray` and `ToUtf16Array` allows binding to LINQ.  
+However, `ToArray` and `ToUtf16Array` will cause some memory allocation when changing to arrays or strings.
+
+```csharp
+Console.WriteLine("Utf8Splitter.ToArray");
+foreach (byte[] s in Utf8Splitter.Split("1,10,100,1000,10000"u8, (byte)',').ToArray().Where(s => s.Length > 3))
+{
+    Console.WriteLine($"{Encoding.UTF8.GetString(s)}");
+}
+
+Console.WriteLine("Utf8Splitter.ToUtf16Array");
+foreach (string s in Utf8Splitter.Split("1,10,100,1000,10000"u8, (byte)',').ToUtf16Array().Select(s => $"[{s}]"))
+{
+    Console.WriteLine(s);
+}
+```
+
+```csharp
+// Utf8Splitter.ToArray
+// 1000
+// 10000
+// Utf8Splitter.ToUtf16Array
+// [1]
+// [10]
+// [100]
+// [1000]
+// [10000]
 ```
 
 License
