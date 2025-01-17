@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -14,11 +14,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, ","u8))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -28,11 +28,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.Split("1--2--3--4--5"u8, "--"u8))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -53,10 +53,10 @@ namespace Utf8StringSplitter.Tests
             };
             foreach (var s in Utf8Splitter.Split("--1--2----3-- --4--5--"u8, "--"u8))
             {
-                s.SequenceEqual(expected[index++]).Should().BeTrue();
+                s.SequenceEqual(expected[index++]).ShouldBeTrue();
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -66,11 +66,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, (byte)','))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -90,10 +90,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, ","u8, Utf8StringSplitOptions.TrimEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -112,10 +112,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.Split(" , 1 , 2 3 ,,    ,45,  "u8, ","u8, Utf8StringSplitOptions.TrimEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -125,10 +125,10 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split(""u8, ","u8, Utf8StringSplitOptions.TrimEntries))
             {
                 index++;
-                s.ToArray().Should().Equal(""u8.ToArray());
+                s.ToArray().ShouldBe(""u8.ToArray());
             }
 
-            index.Should().Be(1);
+            index.ShouldBe(1);
         }
 
         [Fact]
@@ -138,11 +138,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, ","u8, Utf8StringSplitOptions.TrimEntries))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -152,11 +152,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.Split("1--2--3--4--5"u8, "--"u8, Utf8StringSplitOptions.TrimEntries))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -177,10 +177,10 @@ namespace Utf8StringSplitter.Tests
             };
             foreach (var s in Utf8Splitter.Split("-- 1--2 ----3-- -- 4 --5--"u8, "--"u8, Utf8StringSplitOptions.TrimEntries))
             {
-                s.SequenceEqual(expected[index++]).Should().BeTrue();
+                s.SequenceEqual(expected[index++]).ShouldBeTrue();
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -200,10 +200,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, (byte)',', Utf8StringSplitOptions.TrimEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -222,10 +222,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, ","u8, Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -243,10 +243,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.Split(" , 1 , 2 3 ,,    ,45,  "u8, ","u8, Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -258,7 +258,7 @@ namespace Utf8StringSplitter.Tests
                 index++;
             }
 
-            index.Should().Be(0);
+            index.ShouldBe(0);
         }
 
         [Fact]
@@ -268,11 +268,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, ","u8, Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -282,11 +282,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.Split("1--2--3--4--5"u8, "--"u8, Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -304,10 +304,10 @@ namespace Utf8StringSplitter.Tests
             };
             foreach (var s in Utf8Splitter.Split("-- 1--2 ----3-- -- 4 --5--"u8, "--"u8, Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.SequenceEqual(expected[index++]).Should().BeTrue();
+                s.SequenceEqual(expected[index++]).ShouldBeTrue();
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -326,10 +326,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, (byte)',', Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -347,10 +347,10 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, ","u8, 
                 Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -366,10 +366,10 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split(" , 1 , 2 3 ,,    ,45,  "u8, ","u8,
                 Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -382,7 +382,7 @@ namespace Utf8StringSplitter.Tests
                 index++;
             }
 
-            index.Should().Be(0);
+            index.ShouldBe(0);
         }
 
         [Fact]
@@ -393,11 +393,11 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split("1,2,3,4,5"u8, ","u8,
                 Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -408,11 +408,11 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split("1--2--3--4--5"u8, "--"u8,
                 Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -430,10 +430,10 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split("-- 1--2 ----3-- -- 4 --5--"u8, "--"u8,
                 Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.SequenceEqual(expected[index++]).Should().BeTrue();
+                s.SequenceEqual(expected[index++]).ShouldBeTrue();
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
 
@@ -452,10 +452,10 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split(" , 1 , 2,3 ,,4, 5,  "u8, (byte)',',
                 Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -466,30 +466,30 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split(""u8, ""u8))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split(""u8, ","u8))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split(""u8, "---"u8))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
         }
 
@@ -501,20 +501,20 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split("1"u8, ""u8))
                 {
                     index++;
-                    s.ToArray().Should().Equal("1"u8.ToArray());
+                    s.ToArray().ShouldBe("1"u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split("12"u8, ""u8))
                 {
                     index++;
-                    s.ToArray().Should().Equal("12"u8.ToArray());
+                    s.ToArray().ShouldBe("12"u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
         }
 
@@ -525,10 +525,10 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.Split(""u8, (byte)','))
             {
                 index++;
-                s.ToArray().Should().Equal(""u8.ToArray());
+                s.ToArray().ShouldBe(""u8.ToArray());
             }
 
-            index.Should().Be(1);
+            index.ShouldBe(1);
         }
 
         [Fact]
@@ -539,30 +539,30 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split(""u8, ""u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split(""u8, ","u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split(""u8, "---"u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
         }
 
@@ -574,30 +574,30 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split("  "u8, ""u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split("  "u8, ","u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split("  "u8, "---"u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(""u8.ToArray());
+                    s.ToArray().ShouldBe(""u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
         }
 
@@ -611,7 +611,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
             {
                 var index = 0;
@@ -620,7 +620,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
             {
                 var index = 0;
@@ -629,7 +629,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
         }
 
@@ -641,30 +641,30 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split("  "u8, ""u8, Utf8StringSplitOptions.RemoveEmptyEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal("  "u8.ToArray());
+                    s.ToArray().ShouldBe("  "u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split("  "u8, ","u8, Utf8StringSplitOptions.RemoveEmptyEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal("  "u8.ToArray());
+                    s.ToArray().ShouldBe("  "u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split("  "u8, "---"u8, Utf8StringSplitOptions.RemoveEmptyEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal("  "u8.ToArray());
+                    s.ToArray().ShouldBe("  "u8.ToArray());
                 }
 
-                index.Should().Be(1);
+                index.ShouldBe(1);
             }
         }
 
@@ -679,7 +679,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
             {
                 var index = 0;
@@ -689,7 +689,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
             {
                 var index = 0;
@@ -699,7 +699,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
         }
 
@@ -714,7 +714,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
             {
                 var index = 0;
@@ -724,7 +724,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
             {
                 var index = 0;
@@ -734,7 +734,7 @@ namespace Utf8StringSplitter.Tests
                     index++;
                 }
 
-                index.Should().Be(0);
+                index.ShouldBe(0);
             }
         }
 
@@ -746,29 +746,29 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split("  "u8, " "u8))
                 {
                     index++;
-                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                    s.ToArray().ShouldBe(Array.Empty<byte>());
                 }
 
-                index.Should().Be(3);
+                index.ShouldBe(3);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split("  "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                    s.ToArray().ShouldBe(Array.Empty<byte>());
                 }
 
-                index.Should().Be(3);
+                index.ShouldBe(3);
 
                 index = 0;
                 foreach (var s in Utf8Splitter.Split("     "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                    s.ToArray().ShouldBe(Array.Empty<byte>());
                 }
 
-                index.Should().Be(6);
+                index.ShouldBe(6);
 
                 var expected = new List<byte[]>()
                 {
@@ -781,10 +781,10 @@ namespace Utf8StringSplitter.Tests
                 index = 0;
                 foreach (var s in Utf8Splitter.Split("  1  "u8, " "u8, Utf8StringSplitOptions.TrimEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(5);
+                index.ShouldBe(5);
             }
         }
 
@@ -796,29 +796,29 @@ namespace Utf8StringSplitter.Tests
                 foreach (var s in Utf8Splitter.Split("  "u8, (byte)' '))
                 {
                     index++;
-                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                    s.ToArray().ShouldBe(Array.Empty<byte>());
                 }
 
-                index.Should().Be(3);
+                index.ShouldBe(3);
             }
             {
                 var index = 0;
                 foreach (var s in Utf8Splitter.Split("  "u8, (byte)' ', Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                    s.ToArray().ShouldBe(Array.Empty<byte>());
                 }
 
-                index.Should().Be(3);
+                index.ShouldBe(3);
 
                 index = 0;
                 foreach (var s in Utf8Splitter.Split("     "u8, (byte)' ', Utf8StringSplitOptions.TrimEntries))
                 {
                     index++;
-                    s.ToArray().Should().Equal(Array.Empty<byte>());
+                    s.ToArray().ShouldBe(Array.Empty<byte>());
                 }
 
-                index.Should().Be(6);
+                index.ShouldBe(6);
 
                 var expected = new List<byte[]>()
                 {
@@ -831,10 +831,10 @@ namespace Utf8StringSplitter.Tests
                 index = 0;
                 foreach (var s in Utf8Splitter.Split("  1  "u8, (byte)' ', Utf8StringSplitOptions.TrimEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(5);
+                index.ShouldBe(5);
             }
         }
 
@@ -845,11 +845,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.SplitAny("1,2-3;4-5"u8, "-,;"u8))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(5);
+            index.ShouldBe(5);
         }
 
         [Fact]
@@ -859,11 +859,11 @@ namespace Utf8StringSplitter.Tests
             var expected = "12345"u8.ToArray();
             foreach (var s in Utf8Splitter.SplitAny("1,2,3,4,5"u8, ","u8))
             {
-                s.Length.Should().Be(1);
-                s[0].Should().Be(expected[index++]);
+                s.Length.ShouldBe(1);
+                s[0].ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Length);
+            index.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -884,10 +884,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.SplitAny("1--2--3--4--5"u8, "--"u8))
             {
-                s.SequenceEqual(expected[index++]).Should().BeTrue();
+                s.SequenceEqual(expected[index++]).ShouldBeTrue();
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -906,10 +906,10 @@ namespace Utf8StringSplitter.Tests
             };
             foreach (var s in Utf8Splitter.SplitAny("1,2-3; ,4-,5"u8, "-,;"u8))
             {
-                s.SequenceEqual(expected[index++]).Should().BeTrue();
+                s.SequenceEqual(expected[index++]).ShouldBeTrue();
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -919,11 +919,11 @@ namespace Utf8StringSplitter.Tests
             foreach (var s in Utf8Splitter.SplitAny("123456"u8, "-,;=:>?"u8))
             {
                 index++;
-                s.Length.Should().Be(6);
-                s.SequenceEqual("123456"u8).Should().BeTrue();
+                s.Length.ShouldBe(6);
+                s.SequenceEqual("123456"u8).ShouldBeTrue();
             }
 
-            index.Should().Be(1);
+            index.ShouldBe(1);
         }
 
         [Fact]
@@ -944,10 +944,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2,3 ,,4, 5,  "u8, ","u8, Utf8StringSplitOptions.TrimEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
             {
                 var expected = new List<byte[]>()
@@ -964,10 +964,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2,3 ,,4, 5,  "u8, "-,;"u8, Utf8StringSplitOptions.TrimEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
         }
 
@@ -987,10 +987,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2 3 ,,    ,45,  "u8, ","u8, Utf8StringSplitOptions.TrimEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -1010,10 +1010,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2,3 ,,4, 5,  "u8, ","u8, Utf8StringSplitOptions.RemoveEmptyEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
             {
                 var expected = new List<byte[]>()
@@ -1029,10 +1029,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2,3 ,,4, 5,  "u8, "-,;"u8, Utf8StringSplitOptions.RemoveEmptyEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
         }
 
@@ -1051,10 +1051,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2 3 ,,    ,45,  "u8, ","u8, Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -1072,10 +1072,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2,3 ,,4, 5,  "u8, ","u8, Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
             {
                 var expected = new List<byte[]>()
@@ -1089,10 +1089,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2,3 ,,4, 5,  "u8, "-,;"u8, Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
                 {
-                    s.ToArray().Should().Equal(expected[index++]);
+                    s.ToArray().ShouldBe(expected[index++]);
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
         }
 
@@ -1108,10 +1108,10 @@ namespace Utf8StringSplitter.Tests
             var index = 0;
             foreach (var s in Utf8Splitter.SplitAny(" , 1 , 2 3 ,,    ,45,  "u8, ","u8, Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries))
             {
-                s.ToArray().Should().Equal(expected[index++]);
+                s.ToArray().ShouldBe(expected[index++]);
             }
 
-            index.Should().Be(expected.Count);
+            index.ShouldBe(expected.Count);
         }
 
         [Fact]
@@ -1129,10 +1129,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(source, separator))
                 {
-                    s.SequenceEqual(expected[index++]).Should().BeTrue();
+                    s.SequenceEqual(expected[index++]).ShouldBeTrue();
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
             {
                 var expected = new List<byte[]>()
@@ -1144,10 +1144,10 @@ namespace Utf8StringSplitter.Tests
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(source, separator, separatorOptions:Utf8StringSeparatorOptions.Utf8))
                 {
-                    s.SequenceEqual(expected[index++]).Should().BeTrue();
+                    s.SequenceEqual(expected[index++]).ShouldBeTrue();
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
         }
 
@@ -1165,7 +1165,7 @@ namespace Utf8StringSplitter.Tests
                     actual.Add(s.ToArray());
                 }
 
-                actual.Should().BeEquivalentTo(expected);
+                actual.ShouldBeEquivalentTo(expected);
             }
             {
                 var expected = new List<byte>()
@@ -1179,10 +1179,10 @@ namespace Utf8StringSplitter.Tests
 
                 foreach (var s in Utf8Splitter.SplitAny(source, separator, splitOptions: Utf8StringSplitOptions.RemoveEmptyEntries, separatorOptions: Utf8StringSeparatorOptions.Bytes))
                 {
-                    s.SequenceEqual([expected[index++]]).Should().BeTrue();
+                    s.SequenceEqual([expected[index++]]).ShouldBeTrue();
                 }
 
-                index.Should().Be(expected.Count);
+                index.ShouldBe(expected.Count);
             }
         }
 
@@ -1194,9 +1194,9 @@ namespace Utf8StringSplitter.Tests
 
             for (var i = 0; i < result.Length; i++)
             {
-                expected[i].Should().Equal(result[i]);
+                expected[i].ShouldBe(result[i]);
             }
-            result.Length.Should().Be(expected.Length);
+            result.Length.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -1207,9 +1207,9 @@ namespace Utf8StringSplitter.Tests
 
             for (var i = 0; i < result.Length; i++)
             {
-                expected[i].Should().Equal(result[i]);
+                expected[i].ShouldBe(result[i]);
             }
-            result.Length.Should().Be(expected.Length);
+            result.Length.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -1220,9 +1220,9 @@ namespace Utf8StringSplitter.Tests
 
             for (var i = 0; i < result.Length; i++)
             {
-                expected[i].Should().Be(result[i]);
+                expected[i].ShouldBe(result[i]);
             }
-            result.Length.Should().Be(expected.Length);
+            result.Length.ShouldBe(expected.Length);
         }
 
         [Fact]
@@ -1233,9 +1233,9 @@ namespace Utf8StringSplitter.Tests
 
             for (var i = 0; i < result.Length; i++)
             {
-                expected[i].Should().Be(result[i]);
+                expected[i].ShouldBe(result[i]);
             }
-            result.Length.Should().Be(expected.Length);
+            result.Length.ShouldBe(expected.Length);
         }
 
     }
