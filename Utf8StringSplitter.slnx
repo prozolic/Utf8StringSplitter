@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/sandbox/">
+    <Project Path="sandbox/Net6ConsoleApp/Net6ConsoleApp.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Utf8StringSplitter/Utf8StringSplitter.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Utf8StringSplitter.Tests/Utf8StringSplitter.Tests.csproj" />
+  </Folder>
+</Solution>
