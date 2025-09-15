@@ -1,4 +1,4 @@
-﻿
+
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -12,7 +12,7 @@ public static class Utf8Splitter
         const Utf8StringSplitOptions AllOptions = Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries;
         if ((splitOptions & ~AllOptions) != 0)
         {
-            throw new ArgumentException("Utf8StringSplitOptions Value is Invalid.");
+            ArgumentExceptionEx.Throw("The specified 'Utf8StringSplitOptions' value is not valid.");
         }
 
         return new SplitEnumerator(source, separator, splitOptions);
@@ -23,7 +23,7 @@ public static class Utf8Splitter
         const Utf8StringSplitOptions AllOptions = Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries;
         if ((splitOptions & ~AllOptions) != 0)
         {
-            throw new ArgumentException("Utf8StringSplitOptions Value is Invalid.");
+            ArgumentExceptionEx.Throw("The specified 'Utf8StringSplitOptions' value is not valid.");
         }
 
         return new SplitEnumerator(source, separator, splitOptions);
@@ -34,7 +34,7 @@ public static class Utf8Splitter
         const Utf8StringSplitOptions AllOptions = Utf8StringSplitOptions.TrimEntries | Utf8StringSplitOptions.RemoveEmptyEntries;
         if ((splitOptions & ~AllOptions) != 0)
         {
-            throw new ArgumentException("Utf8StringSplitOptions Value is Invalid.");
+            ArgumentExceptionEx.Throw("The specified 'Utf8StringSplitOptions' value is not valid.");
         }
 
         switch(separatorOptions)
@@ -43,7 +43,8 @@ public static class Utf8Splitter
             case Utf8StringSeparatorOptions.Bytes:
                 return new SplitAnyEnumerator(source, separators, splitOptions, separatorOptions);
             default:
-                throw new ArgumentException("Utf8StringSeparatorOptions Value is Invalid.");
+                ArgumentExceptionEx.Throw("The specified 'Utf8StringSeparatorOptions' value is not valid.");
+                return default; // It will not reach here.
         }
     }
 }
@@ -105,7 +106,7 @@ public ref struct SplitEnumerator
 
     public readonly SplitEnumerator GetEnumerator() => this;
 
-    internal readonly int sourceLength => source.Length;
+    internal readonly int SourceLength => source.Length;
 
     public bool MoveNext()
     {
@@ -122,7 +123,7 @@ public ref struct SplitEnumerator
 
     public readonly byte[][] ToArray()
     {
-        var writer = new ExtendableArray<byte[]>(sourceLength);
+        var writer = new ExtendableArray<byte[]>(SourceLength);
         foreach (var i in this)
         {
             writer.Add(i.ToArray());
@@ -133,7 +134,7 @@ public ref struct SplitEnumerator
 
     public readonly string[] ToUtf16Array()
     {
-        var writer = new ExtendableArray<string>(sourceLength);
+        var writer = new ExtendableArray<string>(SourceLength);
         foreach (var i in this)
         {
             writer.Add(UTF8Ex.GetString(i));
@@ -207,8 +208,6 @@ public ref struct SplitEnumerator
         var index = source.IndexOf(separator);
         if (index < 0 || separator.Length == 0) // end
         {
-            (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(source, startIndex, endIndex);
-
             if (trimEntries)
             {
                 if (source.Length == 1 && source[0] == 0x20)
@@ -217,6 +216,7 @@ public ref struct SplitEnumerator
                 }
                 else
                 {
+                    (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(source, startIndex, endIndex);
                     source = source[startIndex..endIndex];
                 }
             }
@@ -235,13 +235,13 @@ public ref struct SplitEnumerator
         source = source[index..];
         if (trimEntries)
         {
-            (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
             if (current.Length == 1 && current[0] == 0x20)
             {
                 current = ReadOnlySpan<byte>.Empty;
             }
             else
             {
+                (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
                 current = current[startIndex..endIndex];
             }
         }
@@ -255,8 +255,6 @@ public ref struct SplitEnumerator
             index = source.IndexOf(separator);
             if (index < 0) // end
             {
-                (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(source, 0, source.Length);
-
                 if (trimEntries)
                 {
                     if (source.Length == 1 && source[0] == 0x20)
@@ -265,6 +263,7 @@ public ref struct SplitEnumerator
                     }
                     else
                     {
+                        (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(source, 0, source.Length);
                         source = source[startIndex..endIndex];
                     }
                 }
@@ -283,13 +282,13 @@ public ref struct SplitEnumerator
             source = source[index..];
             if (trimEntries)
             {
-                (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
                 if (current.Length == 1 && current[0] == 0x20)
                 {
                     current = ReadOnlySpan<byte>.Empty;
                 }
                 else
                 {
+                    (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
                     current = current[startIndex..endIndex];
                 }
             }
@@ -437,8 +436,6 @@ public ref struct SplitAnyEnumerator
         }
         if (index < 0) // end
         {
-            (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(target, startIndex, endIndex);
-
             if (trimEntries)
             {
                 if (target.Length == 1 && target[0] == 0x20)
@@ -447,6 +444,7 @@ public ref struct SplitAnyEnumerator
                 }
                 else
                 {
+                    (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(target, startIndex, endIndex);
                     target = target[startIndex..endIndex];
                 }
             }
@@ -465,13 +463,13 @@ public ref struct SplitAnyEnumerator
         target = target[index..];
         if (trimEntries)
         {
-            (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
             if (current.Length == 1 && current[0] == 0x20)
             {
                 current = ReadOnlySpan<byte>.Empty;
             }
             else
             {
+                (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
                 current = current[startIndex..endIndex];
             }
         }
@@ -495,8 +493,6 @@ public ref struct SplitAnyEnumerator
             }
             if (index < 0) // end
             {
-                (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(target, 0, target.Length);
-
                 if (trimEntries)
                 {
                     if (target.Length == 1 && target[0] == 0x20)
@@ -505,6 +501,7 @@ public ref struct SplitAnyEnumerator
                     }
                     else
                     {
+                        (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(target, 0, target.Length);
                         target = target[startIndex..endIndex];
                     }
                 }
@@ -523,13 +520,13 @@ public ref struct SplitAnyEnumerator
             target = target[index..];
             if (trimEntries)
             {
-                (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
                 if (current.Length == 1 && current[0] == 0x20)
                 {
                     current = ReadOnlySpan<byte>.Empty;
                 }
                 else
                 {
+                    (startIndex, endIndex) = Utf8StringUtility.TrimSplitEntries(current, 0, current.Length);
                     current = current[startIndex..endIndex];
                 }
             }

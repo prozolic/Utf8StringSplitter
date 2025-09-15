@@ -1,7 +1,9 @@
 using Shouldly;
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
+using System.Xml;
 
 namespace Utf8StringSplitter.Tests
 {
@@ -1117,14 +1119,14 @@ namespace Utf8StringSplitter.Tests
         [Fact]
         public void SplitAnyWithUtf8SeparatorOptionsTest()
         {
-            var source = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 }; //Ç†Ç¢Ç§Ç¶Ç§Ç®
-            var separator = new byte[] { 227, 129, 134 }; //Ç§
+            var source = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 }; //„ÅÇ„ÅÑ„ÅÜ„Åà„ÅÜ„Åä
+            var separator = new byte[] { 227, 129, 134 }; //„ÅÜ
             {
                 var expected = new List<byte[]>()
                 {
-                    new byte[] { 227, 129, 130, 227, 129, 132 }, // Ç†Ç¢
-                    new byte[] { 227, 129, 136}, // Ç¶
-                    new byte[] { 227, 129, 138}, // Ç®
+                    new byte[] { 227, 129, 130, 227, 129, 132 }, // „ÅÇ„ÅÑ
+                    new byte[] { 227, 129, 136}, // „Åà
+                    new byte[] { 227, 129, 138}, // „Åä
                 };
                 var index = 0;
                 foreach (var s in Utf8Splitter.SplitAny(source, separator))
@@ -1154,8 +1156,8 @@ namespace Utf8StringSplitter.Tests
         [Fact]
         public void SplitAnyWithBytesSeparatorOptionsTest()
         {
-            var source = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 }; //Ç†Ç¢Ç§Ç¶Ç§Ç®
-            var separator = new byte[] { 227, 129, 134 }; //Ç§
+            var source = new byte[] { 227, 129, 130, 227, 129, 132, 227, 129, 134, 227, 129, 136, 227, 129, 134, 227, 129, 138 }; //„ÅÇ„ÅÑ„ÅÜ„Åà„ÅÜ„Åä
+            var separator = new byte[] { 227, 129, 134 }; //„ÅÜ
             {
                 var actual = new List<byte[]>();
                 var expected = new List<byte[]>();
@@ -1236,6 +1238,39 @@ namespace Utf8StringSplitter.Tests
                 expected[i].ShouldBe(result[i]);
             }
             result.Length.ShouldBe(expected.Length);
+        }
+
+        [Fact]
+        public void ThrowArgumentExceptionTest()
+        {
+            {
+                var ex = Should.Throw<ArgumentException>(() =>
+                {
+                    _ = Utf8Splitter.Split("1,2,3,4,5"u8, (byte)',', splitOptions:(Utf8StringSplitOptions)(-1));
+                });
+                ex.Message.ShouldBe("The specified 'Utf8StringSplitOptions' value is not valid.");
+            }
+            {
+                var ex = Should.Throw<ArgumentException>(() =>
+                {
+                    _ = Utf8Splitter.Split("1,2,3,4,5"u8, ","u8, splitOptions:(Utf8StringSplitOptions)(-1));
+                });
+                ex.Message.ShouldBe("The specified 'Utf8StringSplitOptions' value is not valid.");
+            }
+            {
+                var ex = Should.Throw<ArgumentException>(() =>
+                {
+                    _ = Utf8Splitter.SplitAny("1,2-3;4-5"u8, "-,;"u8, splitOptions:(Utf8StringSplitOptions)(-1));
+                });
+                ex.Message.ShouldBe("The specified 'Utf8StringSplitOptions' value is not valid.");
+            }
+            {
+                var ex = Should.Throw<ArgumentException>(() =>
+                {
+                    _ = Utf8Splitter.SplitAny("1,2-3;4-5"u8, "-,;"u8, separatorOptions:(Utf8StringSeparatorOptions)(-1));
+                });
+                ex.Message.ShouldBe("The specified 'Utf8StringSeparatorOptions' value is not valid.");
+            }
         }
 
     }
