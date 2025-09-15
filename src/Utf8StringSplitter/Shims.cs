@@ -1,4 +1,4 @@
-﻿
+
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -50,4 +50,13 @@ namespace Utf8StringSplitter
 #endif
         }
     }
+
+    internal static class ArgumentExceptionEx
+    {
+        public static void Throw(string message)
+        {
+            throw new ArgumentException(message);
+        }
+    }
+
 }
